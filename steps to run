@@ -1,0 +1,2 @@
+backend --  python -m api.main 
+front end --- npm run dev
