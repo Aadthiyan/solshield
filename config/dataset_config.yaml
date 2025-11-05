@@ -1,0 +1,118 @@
+# Dataset Configuration
+# This file contains configuration settings for dataset collection and preprocessing
+
+# Data collection settings
+data_collection:
+  smartbugs:
+    enabled: true
+    base_url: "https://github.com/smartbugs/smartbugs"
+    vulnerability_types:
+      - "reentrancy"
+      - "integer_overflow"
+      - "access_control"
+      - "unchecked_external_calls"
+      - "front_running"
+      - "timestamp_dependence"
+      - "gas_limit"
+      - "denial_of_service"
+      - "tx_origin"
+  
+  github:
+    enabled: true
+    search_terms:
+      - "solidity smart contract vulnerability"
+      - "ethereum smart contract security"
+      - "defi smart contract audit"
+      - "smart contract bug"
+      - "solidity security"
+    min_stars: 10
+    max_repos_per_term: 50
+  
+  etherscan:
+    enabled: true
+    contract_addresses:
+      - "0xA0b86a33E6441b8C4C8C0C4C8C0C4C8C0C4C8C0C4"  # Mock address
+      - "0xB1c97a44F6442b8C4C8C0C4C8C0C4C8C0C4C8C0C4"  # Mock address
+    min_verified: true
+    include_abi: true
+
+# Preprocessing settings
+preprocessing:
+  code_cleaning:
+    remove_comments: true
+    remove_imports: true
+    remove_pragma: true
+    normalize_whitespace: true
+    min_code_length: 50
+  
+  feature_extraction:
+    extract_syntax_features: true
+    extract_semantic_features: true
+    extract_structural_features: true
+    extract_security_patterns: true
+  
+  vulnerability_mapping:
+    standardize_types: true
+    standardize_severity: true
+    handle_unknown_labels: true
+
+# Validation settings
+validation:
+  data_integrity:
+    check_missing_values: true
+    check_duplicates: true
+    check_data_types: true
+    min_code_length: 50
+  
+  label_accuracy:
+    validate_vulnerability_types: true
+    validate_severity_levels: true
+    check_class_balance: true
+    max_imbalance_ratio: 10
+  
+  feature_quality:
+    check_zero_variance: true
+    check_high_correlation: true
+    correlation_threshold: 0.9
+    check_outliers: true
+  
+  reproducibility:
+    check_consistency: true
+    validate_timestamps: true
+    check_file_integrity: true
+
+# Output settings
+output:
+  raw_data_dir: "data/raw"
+  processed_data_dir: "data/processed"
+  validation_results_dir: "tests/validation_results"
+  reports_dir: "reports"
+  
+  file_formats:
+    raw_data: "json"
+    processed_data: "csv"
+    validation_results: "json"
+    reports: "json"
+  
+  compression: false
+  include_metadata: true
+
+# Quality thresholds
+quality_thresholds:
+  min_contracts: 100
+  max_missing_percentage: 10
+  min_class_samples: 5
+  max_correlation: 0.95
+  min_code_quality_score: 0.7
+
+# Reproducibility settings
+reproducibility:
+  random_seed: 42
+  test_size: 0.2
+  validation_size: 0.1
+  cross_validation_folds: 5
+  
+  version_control:
+    track_data_versions: true
+    track_preprocessing_versions: true
+    generate_checksums: true

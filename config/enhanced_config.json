@@ -1,0 +1,104 @@
+{
+  "project_name": "enhanced-smart-contract-vulnerability-detection",
+  "version": "2.0.0",
+  "description": "Enhanced Smart Contract Vulnerability Detection with Advanced ML Features",
+  
+  "device": "cuda",
+  "epochs": 100,
+  "batch_size": 16,
+  "learning_rate": 1e-4,
+  "weight_decay": 1e-5,
+  "gradient_clipping": 1.0,
+  
+  "data_path": "data/processed/combined_dataset.csv",
+  "use_data_augmentation": true,
+  "augmentation_factor": 2,
+  "use_proxy_labels": true,
+  "use_adversarial_training": true,
+  "robustness_eval_frequency": 5,
+  
+  "num_workers": 4,
+  "pin_memory": true,
+  "use_wandb": false,
+  
+  "joint_gnn": {
+    "input_dim": 128,
+    "hidden_dim": 256,
+    "output_dim": 64,
+    "num_layers": 4,
+    "num_heads": 8,
+    "dropout": 0.1,
+    "use_attention": true,
+    "use_hierarchical": true
+  },
+  
+  "codebert": {
+    "model_name": "microsoft/codebert-base",
+    "num_labels": 1,
+    "dropout": 0.1,
+    "max_length": 512,
+    "use_pooler": true
+  },
+  
+  "gnn": {
+    "input_dim": 128,
+    "hidden_dim": 256,
+    "output_dim": 64,
+    "num_layers": 3,
+    "dropout": 0.1,
+    "use_attention": true,
+    "use_global_pooling": true
+  },
+  
+  "fusion": {
+    "input_dim": 192,
+    "hidden_dim": 256,
+    "output_dim": 128,
+    "dropout": 0.2,
+    "use_attention_fusion": true,
+    "attention_heads": 8
+  },
+  
+  "adversarial_training": {
+    "enabled": true,
+    "adversarial_ratio": 0.3,
+    "epsilon": 0.1,
+    "num_iterations": 10,
+    "attack_types": ["obfuscation", "semantic", "gradient"]
+  },
+  
+  "proxy_labeling": {
+    "enabled": true,
+    "confidence_threshold": 0.7,
+    "signal_weights": {
+      "security_pattern": 0.4,
+      "safety_indicator": 0.3,
+      "vulnerability_indicator": 0.3
+    }
+  },
+  
+  "evaluation": {
+    "metrics": [
+      "accuracy", "precision", "recall", "f1_score", "auc_roc", "auc_pr",
+      "adversarial_accuracy", "robustness_score", "proxy_signal_quality",
+      "fusion_effectiveness", "attention_entropy"
+    ],
+    "save_plots": true,
+    "save_reports": true
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "log_file": "enhanced_training.log",
+    "save_checkpoints": true,
+    "checkpoint_frequency": 10
+  },
+  
+  "output": {
+    "model_dir": "models/enhanced",
+    "output_dir": "outputs",
+    "log_dir": "logs",
+    "save_best_model": true,
+    "save_final_model": true
+  }
+}
