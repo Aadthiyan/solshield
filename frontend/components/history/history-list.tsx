@@ -1,17 +1,36 @@
 "use client"
 
 import { useHistoryStore } from "@/store/history-store"
+import { useAuthStore } from "@/store/auth-store"
 import { Trash2, Copy, Code2, CheckCircle2 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { formatDistanceToNow } from "date-fns"
 
 export default function HistoryList() {
-  const { history, removeItem, clearHistory } = useHistoryStore()
+  const { history, removeItem } = useHistoryStore()
+  const { user } = useAuthStore()
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
 
-  if (history.length === 0) {
+  useEffect(() => {
+    setMounted(true)
+    console.log("[v0] History list mounted. User:", user?.id, "Total history items:", history.length)
+  }, [user, history])
+
+  if (!mounted) {
+    return (
+      <div className="glass rounded-xl p-8 h-full flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    )
+  }
+
+  const userHistory = history.filter((item) => item.userId === user?.id)
+  console.log("[v0] Filtered user history:", userHistory.length, "User ID:", user?.id)
+
+  if (userHistory.length === 0) {
     return (
       <div className="glass rounded-xl p-8 h-full flex items-center justify-center">
         <div className="text-center space-y-3">
@@ -31,19 +50,14 @@ export default function HistoryList() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Analysis History</h2>
-          <p className="text-sm text-muted-foreground mt-1">{history.length} analyses saved</p>
+          <p className="text-sm text-muted-foreground mt-1">{userHistory.length} analyses saved</p>
         </div>
-        {history.length > 0 && (
-          <Button onClick={() => clearHistory()} variant="destructive" size="sm" className="hover:bg-destructive/90">
-            Clear All
-          </Button>
-        )}
       </div>
 
       {/* History List */}
       <ScrollArea className="h-[calc(100vh-200px)]">
         <div className="space-y-3 pr-4">
-          {history.map((item) => {
+          {userHistory.map((item) => {
             const vulnCount = item.results?.vulnerabilities?.length || 0
             const isSelected = selectedId === item.id
 

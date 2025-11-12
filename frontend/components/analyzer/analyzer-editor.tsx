@@ -5,11 +5,13 @@ import EditorPanel from "./editor-panel"
 import ResultsPanel from "./results-panel"
 import { useAnalyzerStore } from "@/store/analyzer-store"
 import { useHistoryStore } from "@/store/history-store"
+import { useAuthStore } from "@/store/auth-store"
 
 export default function AnalyzerEditor() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const { code, setCode, setResults, setError } = useAnalyzerStore()
   const { addItem } = useHistoryStore()
+  const { user } = useAuthStore()
 
   const handleAnalyze = async () => {
     if (!code.trim()) {
@@ -31,7 +33,7 @@ export default function AnalyzerEditor() {
       const data = await response.json()
       setResults(data)
 
-      addItem(code, data)
+      addItem(code, data, user?.id)
     } catch (error) {
       setError(error instanceof Error ? error.message : "Analysis failed")
     } finally {
@@ -40,7 +42,7 @@ export default function AnalyzerEditor() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto p-6">
       <EditorPanel code={code} onChange={setCode} onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
       <ResultsPanel isAnalyzing={isAnalyzing} />
     </div>

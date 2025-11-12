@@ -2,17 +2,28 @@
 
 import Link from "next/link"
 import { ArrowRight, Zap } from "lucide-react"
+import dynamic from "next/dynamic"
+
+const DynamicHeroBackground = dynamic(
+  () => import("./3d-hero-background").then((mod) => ({ default: mod.HeroBackground })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl opacity-30 animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl opacity-30 animate-pulse" />
+      </div>
+    ),
+  },
+)
 
 export function HeroSection() {
   return (
     <section className="relative min-h-[600px] flex items-center justify-center px-4 py-20 overflow-hidden">
       {/* Background gradient orbs */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl opacity-30 animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl opacity-30 animate-pulse" />
-      </div>
+      <DynamicHeroBackground />
 
-      <div className="max-w-4xl mx-auto text-center space-y-8">
+      <div className="max-w-4xl mx-auto text-center space-y-8 relative z-10">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-medium">
           <Zap className="w-4 h-4 text-accent" />
@@ -33,10 +44,10 @@ export function HeroSection() {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
           <Link
-            href="/analyzer"
+            href="/login"
             className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all duration-200 group"
           >
-            Start Analyzing
+            Launch Analyzer
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
           <a

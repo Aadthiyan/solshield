@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Code2, Home, History, Settings } from "lucide-react"
+import { Code2, Home, History } from "lucide-react"
 
 interface SidebarProps {
   open: boolean
@@ -27,11 +27,6 @@ export function Sidebar({ open }: SidebarProps) {
       label: "History",
       href: "/history",
       icon: History,
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-      icon: Settings,
     },
   ]
 
