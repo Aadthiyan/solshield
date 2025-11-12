@@ -1,0 +1,66 @@
+"use client"
+
+import Link from "next/link"
+import { ArrowRight, Zap } from "lucide-react"
+
+export function HeroSection() {
+  return (
+    <section className="relative min-h-[600px] flex items-center justify-center px-4 py-20 overflow-hidden">
+      {/* Background gradient orbs */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl opacity-30 animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl opacity-30 animate-pulse" />
+      </div>
+
+      <div className="max-w-4xl mx-auto text-center space-y-8">
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-medium">
+          <Zap className="w-4 h-4 text-accent" />
+          <span className="text-foreground/80">AI-Powered Security Analysis</span>
+        </div>
+
+        {/* Main Heading */}
+        <h1 className="text-5xl md:text-7xl font-bold text-foreground text-balance leading-tight">
+          Secure Your Smart Contracts with AI
+        </h1>
+
+        {/* Subheading */}
+        <p className="text-lg md:text-xl text-foreground/70 text-balance max-w-2xl mx-auto leading-relaxed">
+          Advanced vulnerability detection powered by artificial intelligence. Analyze Solidity code in seconds and
+          identify security risks before deployment.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+          <Link
+            href="/analyzer"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all duration-200 group"
+          >
+            Start Analyzing
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+          <a
+            href="#features"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-card border border-border hover:bg-card/80 transition-all duration-200"
+          >
+            Learn More
+          </a>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4 md:gap-8 pt-12">
+          {[
+            { label: "Analyses", value: "1000+" },
+            { label: "Vulnerabilities Caught", value: "5000+" },
+            { label: "Users Protected", value: "500+" },
+          ].map((stat) => (
+            <div key={stat.label} className="space-y-1">
+              <p className="text-2xl md:text-3xl font-bold text-accent">{stat.value}</p>
+              <p className="text-sm text-foreground/60">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

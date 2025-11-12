@@ -21,9 +21,10 @@ import uvicorn
 # Add project directories to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from api.routers import vulnerability, system
+from api.routers import vulnerability, system, auth, authenticated_analysis
 from api.middleware.logging import LoggingMiddleware, setup_logging, ErrorHandler
 from api.models.schemas import ErrorResponse
+from api.database import engine, Base
 
 # Set up logging
 logger = setup_logging()
@@ -46,6 +47,10 @@ async def lifespan(app: FastAPI):
     Path("logs").mkdir(exist_ok=True)
     Path("models").mkdir(exist_ok=True)
     Path("cache").mkdir(exist_ok=True)
+    
+    # Create database tables
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables created/verified")
     
     logger.info("Application startup completed")
     
@@ -114,6 +119,8 @@ app.add_middleware(
 app.add_middleware(LoggingMiddleware)
 
 # Include routers
+app.include_router(auth.router)
+app.include_router(authenticated_analysis.router)
 app.include_router(vulnerability.router)
 app.include_router(system.router)
 
