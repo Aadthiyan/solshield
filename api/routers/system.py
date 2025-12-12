@@ -9,7 +9,7 @@ metrics, and system status monitoring.
 import time
 import psutil
 import sys
-from typing import Dict, Any, List
+from typing import Dict, Any, List, TYPE_CHECKING
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 import logging
@@ -22,8 +22,10 @@ from api.models.schemas import (
     HealthCheckResponse, SystemStatusResponse, MetricsResponse,
     ModelInfo, ErrorResponse
 )
-from api.utils.inference_engine import InferenceEngine, ModelType
-from api.middleware.logging import RequestContext, PerformanceMonitor
+
+if TYPE_CHECKING:
+    from api.utils.inference_engine import InferenceEngine, ModelType
+from api.middleware.logging import RequestContext, performance_monitor
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -32,10 +34,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["system"])
 
 # Global instances
-performance_monitor = PerformanceMonitor()
 start_time = time.time()
 
-async def get_inference_engine() -> InferenceEngine:
+async def get_inference_engine() -> "InferenceEngine":
     """Dependency to get inference engine instance"""
     from api.routers.vulnerability import inference_engine
     if inference_engine is None:
@@ -105,7 +106,7 @@ async def health_check(
 
 @router.get("/status", response_model=SystemStatusResponse)
 async def system_status(
-    inference_engine: InferenceEngine = Depends(get_inference_engine),
+    inference_engine: "InferenceEngine" = Depends(get_inference_engine),
     fastapi_request: Request = None
 ):
     """
@@ -164,12 +165,15 @@ async def system_status(
             elif memory_info.percent > 90 or cpu_info > 90:
                 status = "warning"
             
+            # Get active requests
+            active_requests = perf_metrics.get("active_requests", 0)
+            
             response = SystemStatusResponse(
                 status=status,
                 models=models,
                 system_metrics=system_metrics,
-                active_requests=0,  # TODO: Implement request tracking
-                queue_size=0  # TODO: Implement queue tracking
+                active_requests=active_requests,
+                queue_size=0  # Queue tracking requires external queue monitor
             )
             
             logger.info(f"System status retrieved: {status}")
@@ -268,7 +272,7 @@ async def reset_metrics(
 
 @router.get("/models")
 async def get_models_info(
-    inference_engine: InferenceEngine = Depends(get_inference_engine),
+    inference_engine: "InferenceEngine" = Depends(get_inference_engine),
     fastapi_request: Request = None
 ):
     """

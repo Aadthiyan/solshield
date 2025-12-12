@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/store/auth-store"
 
@@ -13,14 +13,19 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter()
   const { isAuthenticated, user } = useAuthStore()
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    if (!isAuthenticated || !user) {
+    setIsHydrated(true)
+  }, [])
+
+  useEffect(() => {
+    if (isHydrated && (!isAuthenticated || !user)) {
       router.push("/login")
     }
-  }, [isAuthenticated, user, router])
+  }, [isAuthenticated, user, router, isHydrated])
 
-  if (!isAuthenticated || !user) {
+  if (!isHydrated || !isAuthenticated || !user) {
     return null
   }
 

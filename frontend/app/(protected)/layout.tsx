@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 import { TopBar } from "@/components/navigation/topbar"

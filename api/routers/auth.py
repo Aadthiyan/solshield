@@ -2,9 +2,10 @@
 Authentication routes for signup, login, and logout
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from api.utils.limiter import limiter
 
 from api.database import get_db
 from api.models.database_models import User
@@ -21,7 +22,8 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
 @router.post("/signup", response_model=UserAuth, status_code=status.HTTP_201_CREATED)
-async def signup(user_data: UserSignup, db: Session = Depends(get_db)):
+@limiter.limit("5/hour")
+async def signup(request: Request, user_data: UserSignup, db: Session = Depends(get_db)):
     """
     Register a new user
     
@@ -70,7 +72,8 @@ async def signup(user_data: UserSignup, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=UserAuth)
-async def login(credentials: UserLogin, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+async def login(request: Request, credentials: UserLogin, db: Session = Depends(get_db)):
     """
     Authenticate user and return JWT tokens
     

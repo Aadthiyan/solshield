@@ -5,7 +5,7 @@ import { ArrowRight, Zap } from "lucide-react"
 import dynamic from "next/dynamic"
 
 const DynamicHeroBackground = dynamic(
-  () => import("./3d-hero-background").then((mod) => ({ default: mod.HeroBackground })),
+  () => import("./3d-hero-background"),
   {
     ssr: false,
     loading: () => (

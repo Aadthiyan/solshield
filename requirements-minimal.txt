@@ -1,3 +1,4 @@
+# Essential packages for running the Smart Contract Analyzer API
 # Core Data Science
 pandas>=1.5.0
 numpy>=1.21.0
@@ -6,10 +7,12 @@ scikit-learn>=1.1.0
 tqdm>=4.64.0
 pyyaml>=6.0
 
-# Deep Learning
+# Deep Learning (Core)
 torch>=2.0.0
 transformers>=4.30.0
 tokenizers>=0.13.0
+
+# Graph Neural Networks
 torch-geometric>=2.3.0
 networkx>=3.1.0
 
@@ -24,11 +27,12 @@ passlib[bcrypt]>=1.7.4
 # Database
 sqlalchemy>=2.0.0
 python-dotenv>=1.0.0
-psycopg2-binary
 
-# Monitoring
+# Monitoring and Logging
 structlog>=23.2.0
 
-# Rate Limiting
-slowapi>=0.25.0
+# Testing (Optional but recommended)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
 httpx
+slowapi>=0.25.0

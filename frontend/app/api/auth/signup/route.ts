@@ -1,24 +1,41 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+// Backend API URL - use environment variable in production
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, username, password } = await request.json()
+    const body = await request.json()
 
-    // Mock user creation - replace with your backend call
-    if (email && username && password) {
-      const user = {
-        id: "user-" + Date.now(),
-        email,
-        username,
-      }
+    // Ensure username is included as the backend expects it inside the user_data schema
+    // The backend endpoint /auth/signup expects UserSignup schema which is EmailStr, Username (optional maybe?), Password
+    // Let's check UserSignup schema in python.
+    // Wait, the python UserSignup schema is not visible here, but api/routers/auth.py handles it.
+    // Line 24 in auth.py: async def signup(user_data: UserSignup, ...):
 
-      const token = btoa(JSON.stringify({ id: user.id, email: user.email, exp: Date.now() + 86400000 }))
+    const response = await fetch(`${BACKEND_URL}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
 
-      return NextResponse.json({ user, token })
+    const data = await response.json()
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { message: data.detail || "Signup failed" },
+        { status: response.status }
+      )
     }
 
-    return NextResponse.json({ message: "Signup failed" }, { status: 400 })
+    return NextResponse.json(data)
   } catch (error) {
-    return NextResponse.json({ message: "Signup failed" }, { status: 500 })
+    console.error("Signup proxy error:", error)
+    return NextResponse.json(
+      { message: "Backend connection failed. Is the server running?" },
+      { status: 500 }
+    )
   }
 }

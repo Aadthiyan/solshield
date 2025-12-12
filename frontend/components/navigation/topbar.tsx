@@ -11,7 +11,12 @@ export function TopBar() {
   const pathname = usePathname()
   const { user, logout } = useAuthStore()
   const [profileOpen, setProfileOpen] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -30,6 +35,16 @@ export function TopBar() {
     { label: "Analyzer", href: "/analyzer", icon: Code2 },
     { label: "History", href: "/history", icon: History },
   ]
+
+  if (!isHydrated) {
+    return (
+      <nav className="h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-6 sticky top-0 z-40">
+        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg" />
+        <div className="flex-1" />
+        <div className="w-8 h-8 rounded-full bg-muted" />
+      </nav>
+    )
+  }
 
   return (
     <nav className="h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-6 sticky top-0 z-40">
@@ -86,6 +101,12 @@ export function TopBar() {
             </div>
 
             <div className="py-2">
+              <Link href="/profile" onClick={() => setProfileOpen(false)} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-card/50 transition-colors">
+                <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center text-[10px] text-primary font-bold">
+                  {user?.username?.[0]?.toUpperCase()}
+                </div>
+                Profile
+              </Link>
               <button
                 onClick={() => {
                   logout()

@@ -8,12 +8,18 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 import uuid
 import logging
+from typing import TYPE_CHECKING
 
 from api.database import get_db
 from api.middleware.auth import get_current_user
 from api.models.database_models import User, Analysis
 from api.models.schemas import ContractSubmissionRequest
-from api.utils.inference_engine import InferenceEngine
+
+# Lazy import of InferenceEngine is performed inside the dependency to avoid
+# importing heavy ML libraries (torch) at application startup.
+
+if TYPE_CHECKING:
+    from api.utils.inference_engine import InferenceEngine
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/protected", tags=["authenticated-analysis"])
@@ -22,10 +28,12 @@ router = APIRouter(prefix="/api/v1/protected", tags=["authenticated-analysis"])
 inference_engine = None
 
 
-async def get_inference_engine() -> InferenceEngine:
+async def get_inference_engine() -> "InferenceEngine":
     """Dependency to get inference engine instance"""
     global inference_engine
     if inference_engine is None:
+        from api.utils.inference_engine import InferenceEngine
+
         inference_engine = InferenceEngine()
         await inference_engine.initialize()
     return inference_engine
@@ -36,7 +44,7 @@ async def analyze_contract_authenticated(
     request: ContractSubmissionRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    inference_engine: InferenceEngine = Depends(get_inference_engine)
+    inference_engine: "InferenceEngine" = Depends(get_inference_engine)
 ):
     """
     Analyze a smart contract for vulnerabilities (Authenticated)

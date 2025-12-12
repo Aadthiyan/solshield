@@ -3,7 +3,7 @@ Authentication dependencies for protecting routes
 """
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError
 from sqlalchemy.orm import Session
 
@@ -16,7 +16,7 @@ security = HTTPBearer()
 
 
 async def get_current_user(
-    credentials: HTTPAuthCredentials = Depends(security),
+    credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ) -> User:
     """
@@ -68,7 +68,7 @@ async def get_current_user(
 
 
 async def get_current_user_optional(
-    credentials: HTTPAuthCredentials = None,
+    credentials: HTTPAuthorizationCredentials = None,
     db: Session = Depends(get_db)
 ) -> User:
     """

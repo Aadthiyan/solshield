@@ -1,25 +1,35 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+// Backend API URL - use environment variable in production
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
 
-    // Mock authentication - replace with your backend call
-    if (email && password) {
-      const user = {
-        id: "user-" + Date.now(),
-        email,
-        username: email.split("@")[0],
-      }
+    const response = await fetch(`${BACKEND_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
 
-      // Mock JWT token
-      const token = btoa(JSON.stringify({ id: user.id, email: user.email, exp: Date.now() + 86400000 }))
+    const data = await response.json()
 
-      return NextResponse.json({ user, token })
+    if (!response.ok) {
+      return NextResponse.json(
+        { message: data.detail || "Login failed" },
+        { status: response.status }
+      )
     }
 
-    return NextResponse.json({ message: "Invalid credentials" }, { status: 401 })
+    return NextResponse.json(data)
   } catch (error) {
-    return NextResponse.json({ message: "Login failed" }, { status: 500 })
+    console.error("Login proxy error:", error)
+    return NextResponse.json(
+      { message: "Backend connection failed. Is the server running?" },
+      { status: 500 }
+    )
   }
 }

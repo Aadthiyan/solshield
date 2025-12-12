@@ -25,6 +25,9 @@ from api.routers import vulnerability, system, auth, authenticated_analysis
 from api.middleware.logging import LoggingMiddleware, setup_logging, ErrorHandler
 from api.models.schemas import ErrorResponse
 from api.database import engine, Base
+from api.utils.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 # Set up logging
 logger = setup_logging()
@@ -100,10 +103,14 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Initialize limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

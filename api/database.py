@@ -19,7 +19,13 @@ if "sqlite" in DATABASE_URL:
         poolclass=StaticPool,
     )
 else:
-    engine = create_engine(DATABASE_URL)
+    # For PostgreSQL (and other servers) enable pool_pre_ping to handle
+    # stale connections and set a sensible pool size. The DATABASE_URL
+    # should be in the format: postgresql://user:password@host:port/dbname
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+    )
 
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

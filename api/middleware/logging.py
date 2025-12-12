@@ -150,6 +150,9 @@ class LoggingMiddleware:
         # Log request
         self.logger.log_request(request, request_id)
         
+        # Track active request
+        performance_monitor.increment_active()
+        
         # Track start time
         start_time = time.time()
         
@@ -176,6 +179,12 @@ class LoggingMiddleware:
                 )
                 
                 response_sent = True
+                
+                # Record metrics
+                performance_monitor.record_request(
+                    response_time,
+                    status_code < 400
+                )
             
             elif message["type"] == "http.response.body":
                 # Track response size
@@ -214,6 +223,12 @@ class LoggingMiddleware:
             )
             
             await error_response(scope, receive, send)
+            
+            # Record failed metric
+            performance_monitor.record_request(0.0, False)
+            
+        finally:
+            performance_monitor.decrement_active()
 
 class ErrorHandler:
     """Centralized error handling for the API"""
@@ -288,9 +303,19 @@ class PerformanceMonitor:
             "failed_requests": 0,
             "average_response_time": 0.0,
             "max_response_time": 0.0,
-            "min_response_time": float('inf')
+            "min_response_time": float('inf'),
+            "active_requests": 0
         }
         self.response_times = []
+    
+    def increment_active(self):
+        """Increment active requests counter"""
+        self.metrics["active_requests"] += 1
+        
+    def decrement_active(self):
+        """Decrement active requests counter"""
+        if self.metrics["active_requests"] > 0:
+            self.metrics["active_requests"] -= 1
     
     def record_request(self, response_time: float, success: bool):
         """Record request metrics"""
@@ -328,6 +353,9 @@ class PerformanceMonitor:
             "min_response_time": float('inf')
         }
         self.response_times = []
+
+# Global performance monitor instance
+performance_monitor = PerformanceMonitor()
 
 class RequestContext:
     """Request context manager for tracking request state"""
