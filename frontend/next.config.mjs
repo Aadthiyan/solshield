@@ -6,6 +6,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  reactStrictMode: false,
+  swcMinify: true,
+  experimental: {
+    optimizePackageImports: ["@radix-ui/react-*"],
+  },
 }
 
 export default nextConfig
