@@ -24,7 +24,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from api.routers import vulnerability, system, auth, authenticated_analysis
 from api.middleware.logging import LoggingMiddleware, setup_logging, ErrorHandler
 from api.models.schemas import ErrorResponse
-from api.database import engine, Base
+from api.database import create_tables, get_engine, Base
 from api.utils.limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
     Path("cache").mkdir(exist_ok=True)
     
     # Create database tables
-    Base.metadata.create_all(bind=engine)
+    create_tables()
     logger.info("Database tables created/verified")
     
     logger.info("Application startup completed")
