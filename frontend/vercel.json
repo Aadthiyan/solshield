@@ -1,0 +1,7 @@
+{
+  "buildCommand": "npm ci && npm run build",
+  "outputDirectory": ".next",
+  "environment": {
+    "NEXT_PUBLIC_API_URL": "https://solshield-erqm.onrender.com"
+  }
+}

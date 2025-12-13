@@ -1,8 +1,5 @@
 {
-  "buildCommand": "bash build.sh",
-  "outputDirectory": "frontend/.next",
-  "framework": "nextjs",
-  "cleanUrls": true,
-  "trailingSlash": false
+  "framework": "nextjs"
 }
+
 
