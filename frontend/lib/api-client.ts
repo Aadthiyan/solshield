@@ -3,6 +3,8 @@
  * Provides methods for interacting with the analyzer backend
  */
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 interface AnalyzeRequest {
   code: string
 }
@@ -23,7 +25,7 @@ interface AnalyzeResponse {
 }
 
 export async function analyzeCode(code: string): Promise<AnalyzeResponse> {
-  const response = await fetch("/api/analyze", {
+  const response = await fetch(`${API_URL}/api/analyze`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
