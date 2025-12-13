@@ -51,9 +51,13 @@ async def lifespan(app: FastAPI):
     Path("models").mkdir(exist_ok=True)
     Path("cache").mkdir(exist_ok=True)
     
-    # Create database tables
-    create_tables()
-    logger.info("Database tables created/verified")
+    # Create database tables (non-blocking if database not ready)
+    try:
+        create_tables()
+        logger.info("Database tables created/verified")
+    except Exception as e:
+        logger.warning(f"Could not initialize database tables on startup: {e}")
+        logger.info("Database will be initialized on first request")
     
     logger.info("Application startup completed")
     
