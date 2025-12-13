@@ -8,9 +8,6 @@ const nextConfig = {
   },
   reactStrictMode: false,
   swcMinify: true,
-  experimental: {
-    optimizePackageImports: ["@radix-ui/react-*"],
-  },
 }
 
 export default nextConfig

@@ -1,13 +1,9 @@
 {
-  "buildCommand": "pnpm --filter ./frontend run build",
+  "buildCommand": "cd frontend && pnpm run build",
   "outputDirectory": "frontend/.next",
-  "installCommand": "pnpm install -r",
+  "installCommand": "cd frontend && pnpm install",
   "framework": "nextjs",
-  "roots": [
-    {
-      "src": "frontend",
-      "path": "frontend"
-    }
-  ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }
 
