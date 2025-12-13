@@ -1,0 +1,16 @@
+# Ignore these directories/files for Vercel builds
+node_modules/
+.next/
+.env.local
+.env.*.local
+.git/
+.gitignore
+api/
+scripts/
+tests/
+benchmarking/
+models/
+training/
+notebooks/
+*.db
+*.md
