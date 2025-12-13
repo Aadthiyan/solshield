@@ -30,5 +30,5 @@ psycopg2-binary
 structlog>=23.2.0
 
 # Rate Limiting
-slowapi>=0.25.0
+slowapi>=0.1.9
 httpx
