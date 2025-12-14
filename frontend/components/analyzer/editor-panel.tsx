@@ -43,29 +43,34 @@ export default function EditorPanel({
   }
 
   return (
-    <div className="glass rounded-xl overflow-hidden flex flex-col h-[600px]">
+    <div className="bg-slate-900/50 border border-white/10 backdrop-blur-md rounded-xl overflow-hidden flex flex-col h-[600px] shadow-2xl">
       {/* Header with mode toggle */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border/50">
-        <h2 className="text-lg font-semibold text-foreground">Solidity Code</h2>
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
+        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+          <FileText className="w-5 h-5 text-cyan-400" />
+          Solidity Code
+        </h2>
 
         <div className="flex items-center gap-2">
-          <div className="flex gap-1 bg-card rounded-lg p-1">
+          <div className="flex gap-1 bg-black/20 rounded-lg p-1 border border-white/5">
             <button
               onClick={() => setInputMode("paste")}
-              className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                inputMode === "paste" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${inputMode === "paste"
+                  ? "bg-cyan-500/10 text-cyan-400 shadow-sm"
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                }`}
             >
-              <FileText className="w-4 h-4 inline mr-1" />
+              <FileText className="w-4 h-4 inline mr-2" />
               Paste
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                inputMode === "file" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${inputMode === "file"
+                  ? "bg-cyan-500/10 text-cyan-400 shadow-sm"
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                }`}
             >
-              <Upload className="w-4 h-4 inline mr-1" />
+              <Upload className="w-4 h-4 inline mr-2" />
               File
             </button>
           </div>
@@ -74,7 +79,7 @@ export default function EditorPanel({
             variant="ghost"
             size="sm"
             onClick={handleCopy}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-slate-400 hover:text-white hover:bg-white/5"
           >
             {copied ? "Copied!" : <Copy className="w-4 h-4" />}
           </Button>
@@ -96,17 +101,21 @@ export default function EditorPanel({
       </div>
 
       {/* Footer with analyze button */}
-      <div className="px-6 py-4 border-t border-border/50 flex gap-3">
-        <Button onClick={onAnalyze} disabled={isAnalyzing} className="flex-1 bg-primary hover:bg-primary/90">
+      <div className="px-6 py-4 border-t border-white/10 bg-white/5 flex gap-3">
+        <Button
+          onClick={onAnalyze}
+          disabled={isAnalyzing}
+          className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-6 shadow-lg shadow-cyan-900/20 border-0"
+        >
           {isAnalyzing ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Analyzing...
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Analyzing Contract...
             </>
           ) : (
             <>
-              <Zap className="w-4 h-4 mr-2" />
-              Analyze Code
+              <Zap className="w-5 h-5 mr-2 fill-current" />
+              Analyze Smart Contract
             </>
           )}
         </Button>

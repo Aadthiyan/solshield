@@ -42,7 +42,7 @@ export default function AnalyzerEditor() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto p-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
       <EditorPanel code={code} onChange={setCode} onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
       <ResultsPanel isAnalyzing={isAnalyzing} />
     </div>
