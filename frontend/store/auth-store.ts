@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
+import { useAuth, useUser } from "@clerk/nextjs"
 
 interface User {
   id: string
@@ -13,8 +14,7 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
-  login: (email: string, password: string) => Promise<void>
-  signup: (email: string, username: string, password: string) => Promise<void>
+  initializeFromClerk: (clerkUser: any, token: string | null) => void
   logout: () => void
   setError: (error: string | null) => void
   setUser: (user: User | null) => void
@@ -30,63 +30,26 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       error: null,
 
-      login: async (email: string, password: string) => {
-        set({ isLoading: true, error: null })
-        try {
-          const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-          })
-
-          if (!response.ok) {
-            const data = await response.json()
-            throw new Error(data.message || "Login failed")
+      initializeFromClerk: (clerkUser: any, token: string | null) => {
+        if (clerkUser) {
+          const user: User = {
+            id: clerkUser.id,
+            email: clerkUser.emailAddresses?.[0]?.emailAddress || "",
+            username: clerkUser.username || clerkUser.firstName || "",
           }
-
-          const data = await response.json()
           set({
-            user: data.user,
-            token: data.token,
+            user,
+            token,
             isAuthenticated: true,
             isLoading: false,
           })
-        } catch (error) {
+        } else {
           set({
-            error: error instanceof Error ? error.message : "Login failed",
+            user: null,
+            token: null,
+            isAuthenticated: false,
             isLoading: false,
           })
-          throw error
-        }
-      },
-
-      signup: async (email: string, username: string, password: string) => {
-        set({ isLoading: true, error: null })
-        try {
-          const response = await fetch("/api/auth/signup", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, username, password }),
-          })
-
-          if (!response.ok) {
-            const data = await response.json()
-            throw new Error(data.message || "Signup failed")
-          }
-
-          const data = await response.json()
-          set({
-            user: data.user,
-            token: data.token,
-            isAuthenticated: true,
-            isLoading: false,
-          })
-        } catch (error) {
-          set({
-            error: error instanceof Error ? error.message : "Signup failed",
-            isLoading: false,
-          })
-          throw error
         }
       },
 
@@ -123,3 +86,4 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 )
+

@@ -27,6 +27,10 @@ sqlalchemy>=2.0.0
 python-dotenv>=1.0.0
 psycopg2-binary
 
+# Authentication
+clerk-backend-api>=1.0.0
+pyjwt>=2.8.0
+
 # Monitoring
 structlog>=23.2.0
 

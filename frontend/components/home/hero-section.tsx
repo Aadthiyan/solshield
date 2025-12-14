@@ -44,7 +44,7 @@ export function HeroSection() {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
           <Link
-            href="/login"
+            href="/sign-in"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:scale-105 transition-all duration-200 group relative overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-2">

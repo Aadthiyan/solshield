@@ -20,7 +20,7 @@ export function CTASection() {
         </p>
 
         <Link
-          href="/analyzer"
+          href="/sign-in"
           className="inline-flex items-center justify-center gap-2 px-10 py-5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:scale-105 transition-all duration-300 group"
         >
           Launch Analyzer
